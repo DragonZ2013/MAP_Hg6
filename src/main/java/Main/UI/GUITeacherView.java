@@ -70,13 +70,9 @@ public class GUITeacherView extends Application {
         TextField courseIdField = new TextField();
         layoutTeacher.add(courseIdField,1,2);
 
-        /*
-        TableView table = new TableView();
-        TableColumn<Pair<Integer,Integer>,Integer> columnCourseId = new TableColumn("Course Id");
-        TableColumn<Pair<Integer,Integer>,Integer> columnStudentId = new TableColumn("Student Id");
-        table.getColumns().addAll(columnCourseId,columnStudentId);
-        layoutTeacher.add(table,1,3);*/
-        ListView<Student> listViewStudents = new ListView();;
+        ListView<Student> listViewStudents = new ListView();
+        listViewStudents.setPrefWidth(600);
+        listViewStudents.setPrefHeight(800);
         layoutTeacher.add(listViewStudents,1,3);
 
 
@@ -92,13 +88,16 @@ public class GUITeacherView extends Application {
                 layoutTeacher.add(userInfo,1,1);
                 primaryStage.setScene(sceneTeacher);
                 buttonRefresh.setOnAction(e2->{
-                    for(int s: enrolledStudents(parseInt(courseIdField.getText()),userTeacher.getTeacherId())) {
-                        try {
-                            listViewStudents.getItems().add(controller.getStudent(s));
-                        } catch (SQLException ex) {
-                            ex.printStackTrace();
-                        }
-                    }
+                    listViewStudents.getItems().clear();
+                    if(!courseIdField.getText().equals(""))
+                        if(enrolledStudents(parseInt(courseIdField.getText()),userTeacher.getTeacherId())!=null)
+                            for(int s: enrolledStudents(parseInt(courseIdField.getText()),userTeacher.getTeacherId())) {
+                                try {
+                                    listViewStudents.getItems().add(controller.getStudent(s));
+                                } catch (SQLException ex) {
+                                    listViewStudents.getItems().clear();
+                                }
+                            }
 
                     });
             }

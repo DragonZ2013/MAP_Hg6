@@ -1,6 +1,9 @@
 package Main.UI;
 
 import Main.Controller.Controller;
+import Main.Exceptions.ExistentIdException;
+import Main.Exceptions.MaxSizeException;
+import Main.Exceptions.MissingIdException;
 import Main.Model.*;
 import Main.Repository.CourseSqlRepository;
 import Main.Repository.StudentSqlRepository;
@@ -67,6 +70,7 @@ public class GUIStudentView extends Application {
         layoutStudent.add(buttonRegister,2,2);
 
 
+
         Scene sceneStudent = new Scene(layoutStudent,1280,720);
         buttonLogin.setOnAction(e-> {
             try {
@@ -78,8 +82,19 @@ public class GUIStudentView extends Application {
                 Label userInfo = new Label("Student Id: "+userStudent.getStudentId()+" First Name: "+userStudent.getFirstName()+" Last Name: " + userStudent.getLastName());
                 Label userCredits = new Label("Student Credits: "+ userStudent.getTotalCredits());
                 layoutStudent.add(userInfo,1,1);
-                layoutStudent.add(userCredits,2,2);
-                buttonRegister.setOnAction(e2-> userCredits.setText("Student Credits: "+ userStudent.getTotalCredits()));
+                layoutStudent.add(userCredits,2,1);
+                buttonRegister.setOnAction(e2-> {
+                    try {
+                        controller.registerStudent(userStudent.getStudentId(),parseInt(fieldRegister.getText()));
+                    } catch (MissingIdException | MaxSizeException | SQLException | ExistentIdException ex) {
+                        ex.printStackTrace();
+                    }
+                    try {
+                        userStudent=controller.getStudent(userStudent.getStudentId());
+                    } catch (SQLException ex) {
+                        ex.printStackTrace();
+                    }
+                    userCredits.setText("Student Credits: "+ userStudent.getTotalCredits());});
                 primaryStage.setScene(sceneStudent);}
         });
         primaryStage.show();
