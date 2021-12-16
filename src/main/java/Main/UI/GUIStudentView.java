@@ -60,9 +60,11 @@ public class GUIStudentView extends Application {
         GridPane layoutStudent = new GridPane();
         layoutStudent.setHgap(10);
         layoutStudent.setVgap(10);
-        Button buttonRefresh = new Button();
-        buttonRefresh.setText("Refresh");
-        layoutStudent.add(buttonRefresh,1,2);
+        Button buttonRegister = new Button();
+        buttonRegister.setText("Register");
+        TextField fieldRegister = new TextField();
+        layoutStudent.add(fieldRegister,1,2);
+        layoutStudent.add(buttonRegister,2,2);
 
 
         Scene sceneStudent = new Scene(layoutStudent,1280,720);
@@ -77,7 +79,7 @@ public class GUIStudentView extends Application {
                 Label userCredits = new Label("Student Credits: "+ userStudent.getTotalCredits());
                 layoutStudent.add(userInfo,1,1);
                 layoutStudent.add(userCredits,2,2);
-                buttonRefresh.setOnAction(e2-> userCredits.setText("Student Credits: "+ userStudent.getTotalCredits()));
+                buttonRegister.setOnAction(e2-> userCredits.setText("Student Credits: "+ userStudent.getTotalCredits()));
                 primaryStage.setScene(sceneStudent);}
         });
         primaryStage.show();

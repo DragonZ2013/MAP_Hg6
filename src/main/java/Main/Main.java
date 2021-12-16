@@ -2,11 +2,14 @@ package Main;
 
 import Main.Controller.Controller;
 
+import Main.Model.Course;
 import Main.Repository.*;
 import Main.UI.*;
 import javafx.application.Application;
 import javafx.stage.Stage;
+import javafx.util.Pair;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 
@@ -23,6 +26,7 @@ public class Main {
         StudentSqlRepository sr = new StudentSqlRepository(connURL,connUser,connPassword);
 
         Controller cont = new Controller(cr,tr,sr);
+
 
 
 

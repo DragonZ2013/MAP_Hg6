@@ -6,19 +6,20 @@ import Main.Repository.CourseSqlRepository;
 import Main.Repository.StudentSqlRepository;
 import Main.Repository.TeacherSqlRepository;
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.geometry.Insets;
-import javafx.scene.Parent;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import javafx.util.Pair;
 
-import java.io.IOException;
+import java.sql.Array;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static java.lang.Integer.parseInt;
 
@@ -26,6 +27,7 @@ public class GUITeacherView extends Application {
 
     Controller controller;
     Teacher userTeacher;
+    ObservableList<Pair<Integer,Integer>> enrollments;
 
     public static void main(String[] args){
 
@@ -47,7 +49,7 @@ public class GUITeacherView extends Application {
         GridPane layoutLogin = new GridPane();
         Scene sceneLogin = new Scene(layoutLogin,300,250);
         primaryStage.setScene(sceneLogin);
-
+        AtomicReference<ArrayList<Pair<Integer, Integer>>> enrolledStudents= new AtomicReference<>(new ArrayList<>());
         layoutLogin.setHgap(10);
         layoutLogin.setVgap(10);
         primaryStage.setTitle("Teacher Manager");
@@ -63,8 +65,20 @@ public class GUITeacherView extends Application {
         layoutTeacher.setVgap(10);
         Scene sceneTeacher = new Scene(layoutTeacher,1280,720);
         Button buttonRefresh = new Button();
-        buttonRefresh.setText("Refresh");
-        layoutTeacher.add(buttonRefresh,2,1);
+        buttonRefresh.setText("Update");
+        layoutTeacher.add(buttonRefresh,2,2);
+        TextField courseIdField = new TextField();
+        layoutTeacher.add(courseIdField,1,2);
+
+        /*
+        TableView table = new TableView();
+        TableColumn<Pair<Integer,Integer>,Integer> columnCourseId = new TableColumn("Course Id");
+        TableColumn<Pair<Integer,Integer>,Integer> columnStudentId = new TableColumn("Student Id");
+        table.getColumns().addAll(columnCourseId,columnStudentId);
+        layoutTeacher.add(table,1,3);*/
+        ListView<Student> listViewStudents = new ListView();;
+        layoutTeacher.add(listViewStudents,1,3);
+
 
 
         buttonLogin.setOnAction(e-> {
@@ -76,9 +90,36 @@ public class GUITeacherView extends Application {
             if(userTeacher!=null){
                 Label userInfo = new Label("Teacher Id: "+userTeacher.getTeacherId()+" First Name: "+userTeacher.getFirstName()+" Last Name: " + userTeacher.getLastName());
                 layoutTeacher.add(userInfo,1,1);
-                primaryStage.setScene(sceneTeacher);}
+                primaryStage.setScene(sceneTeacher);
+                buttonRefresh.setOnAction(e2->{
+                    for(int s: enrolledStudents(parseInt(courseIdField.getText()),userTeacher.getTeacherId())) {
+                        try {
+                            listViewStudents.getItems().add(controller.getStudent(s));
+                        } catch (SQLException ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+
+                    });
+            }
         });
         primaryStage.show();
 
     }
+
+
+    public List<Integer> enrolledStudents(int teacherId,int courseId){
+
+        Course c = null;
+        try{
+            c = controller.getCourse(courseId);
+        } catch (SQLException throwables) {
+            return null;
+        }
+        if(c.getTeacher()!=teacherId)
+            return null;
+        return c.getStudentsEnrolled();
+
+    }
+
 }
