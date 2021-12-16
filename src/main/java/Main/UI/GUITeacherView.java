@@ -107,7 +107,7 @@ public class GUITeacherView extends Application {
     }
 
 
-    public List<Integer> enrolledStudents(int teacherId,int courseId){
+    public List<Integer> enrolledStudents(int courseId,int teacherId){
 
         Course c = null;
         try{
@@ -115,6 +115,8 @@ public class GUITeacherView extends Application {
         } catch (SQLException throwables) {
             return null;
         }
+        if(c==null)
+            return null;
         if(c.getTeacher()!=teacherId)
             return null;
         return c.getStudentsEnrolled();
