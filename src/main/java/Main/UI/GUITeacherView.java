@@ -47,7 +47,7 @@ public class GUITeacherView extends Application {
 
 
         GridPane layoutLogin = new GridPane();
-        Scene sceneLogin = new Scene(layoutLogin,300,250);
+        Scene sceneLogin = new Scene(layoutLogin,250,80);
         primaryStage.setScene(sceneLogin);
         AtomicReference<ArrayList<Pair<Integer, Integer>>> enrolledStudents= new AtomicReference<>(new ArrayList<>());
         layoutLogin.setHgap(10);
@@ -63,7 +63,7 @@ public class GUITeacherView extends Application {
         GridPane layoutTeacher = new GridPane();
         layoutTeacher.setHgap(10);
         layoutTeacher.setVgap(10);
-        Scene sceneTeacher = new Scene(layoutTeacher,1280,720);
+        Scene sceneTeacher = new Scene(layoutTeacher,700,700);
         Button buttonRefresh = new Button();
         buttonRefresh.setText("Update");
         layoutTeacher.add(buttonRefresh,2,2);
@@ -72,7 +72,7 @@ public class GUITeacherView extends Application {
 
         ListView<Student> listViewStudents = new ListView();
         listViewStudents.setPrefWidth(600);
-        listViewStudents.setPrefHeight(800);
+        listViewStudents.setPrefHeight(600);
         layoutTeacher.add(listViewStudents,1,3);
 
 

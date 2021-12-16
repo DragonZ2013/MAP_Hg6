@@ -48,7 +48,7 @@ public class GUIStudentView extends Application {
 
 
         GridPane layoutLogin = new GridPane();
-        Scene sceneLogin = new Scene(layoutLogin,300,250);
+        Scene sceneLogin = new Scene(layoutLogin,250,80);
         primaryStage.setScene(sceneLogin);
         layoutLogin.setHgap(10);
         layoutLogin.setVgap(10);
@@ -71,7 +71,7 @@ public class GUIStudentView extends Application {
 
 
 
-        Scene sceneStudent = new Scene(layoutStudent,1280,720);
+        Scene sceneStudent = new Scene(layoutStudent,430,70);
         buttonLogin.setOnAction(e-> {
             try {
                 userStudent = controller.getStudent(parseInt(loginIdField.getText()));
