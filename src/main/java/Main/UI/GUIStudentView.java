@@ -25,15 +25,15 @@ import static java.lang.Integer.parseInt;
 
 public class GUIStudentView extends Application {
 
-    Button button;
     Controller controller;
+    Student userStudent;
 
     public static void main(String[] args){
         launch();
     }
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
+    public void start(Stage primaryStage) {
         String connURL="jdbc:mysql://localhost:3306/mapsqlproject";
         String connUser="root";
         String connPassword="1234";
@@ -42,28 +42,28 @@ public class GUIStudentView extends Application {
         StudentSqlRepository sr = new StudentSqlRepository(connURL,connUser,connPassword);
 
         controller = new Controller(cr,tr,sr);
-        primaryStage.setTitle("Student Manager");
-        TextField loginIdField= new TextField();
-        Button buttonLogin =  new Button();
-        buttonLogin.setText("Login");
+
 
         GridPane layout = new GridPane();
+        Scene sceneLogin = new Scene(layout,300,250);
+        primaryStage.setScene(sceneLogin);
         layout.setHgap(10);
         layout.setVgap(10);
+        primaryStage.setTitle("Student Manager");
+        TextField loginIdField = new TextField();
+        Button buttonLogin = new Button();
+        buttonLogin.setText("Login");
         layout.add(loginIdField,1,1);
         layout.add(buttonLogin,1,2);
 
         buttonLogin.setOnAction(e-> {
-            Student student;
             try {
-                student = controller.getStudent(parseInt(loginIdField.getText()));
+                userStudent = controller.getStudent(parseInt(loginIdField.getText()));
             } catch (Exception ex) {
-                student = null;
+                userStudent = null;
             }
-            System.out.println(student);
+            System.out.println(userStudent);
         });
-        Scene scene = new Scene(layout,300,250);
-        primaryStage.setScene(scene);
         primaryStage.show();
     }
 }

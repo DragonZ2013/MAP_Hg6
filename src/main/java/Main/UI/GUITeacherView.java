@@ -25,6 +25,7 @@ import static java.lang.Integer.parseInt;
 public class GUITeacherView extends Application {
 
     Controller controller;
+    Teacher userTeacher;
 
     public static void main(String[] args){
 
@@ -41,28 +42,29 @@ public class GUITeacherView extends Application {
         StudentSqlRepository sr = new StudentSqlRepository(connURL,connUser,connPassword);
 
         controller = new Controller(cr,tr,sr);
-        primaryStage.setTitle("Teacher Manager");
-        TextField loginIdField= new TextField();
-        Button buttonLogin =  new Button();
-        buttonLogin.setText("Login");
+
 
         GridPane layout = new GridPane();
+        Scene sceneLogin = new Scene(layout,300,250);
+        primaryStage.setScene(sceneLogin);
+
         layout.setHgap(10);
         layout.setVgap(10);
+        primaryStage.setTitle("Teacher Manager");
+        TextField loginIdField = new TextField();
+        Button buttonLogin = new Button();
+        buttonLogin.setText("Login");
         layout.add(loginIdField,1,1);
         layout.add(buttonLogin,1,2);
         buttonLogin.setOnAction(e-> {
-            Teacher teacher;
             try {
-                teacher = controller.getTeacher(parseInt(loginIdField.getText()));
+                userTeacher = controller.getTeacher(parseInt(loginIdField.getText()));
             } catch (Exception ex) {
-                teacher = null;
+                userTeacher = null;
             }
-            System.out.println(teacher);
+            System.out.println(userTeacher);
         });
-
-        Scene scene = new Scene(layout,300,250);
-        primaryStage.setScene(scene);
         primaryStage.show();
+
     }
 }
