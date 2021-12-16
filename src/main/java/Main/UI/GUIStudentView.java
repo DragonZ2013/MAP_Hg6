@@ -44,25 +44,41 @@ public class GUIStudentView extends Application {
         controller = new Controller(cr,tr,sr);
 
 
-        GridPane layout = new GridPane();
-        Scene sceneLogin = new Scene(layout,300,250);
+        GridPane layoutLogin = new GridPane();
+        Scene sceneLogin = new Scene(layoutLogin,300,250);
         primaryStage.setScene(sceneLogin);
-        layout.setHgap(10);
-        layout.setVgap(10);
+        layoutLogin.setHgap(10);
+        layoutLogin.setVgap(10);
         primaryStage.setTitle("Student Manager");
+        Label loginLabel = new Label("Student Id:");
         TextField loginIdField = new TextField();
         Button buttonLogin = new Button();
         buttonLogin.setText("Login");
-        layout.add(loginIdField,1,1);
-        layout.add(buttonLogin,1,2);
+        layoutLogin.add(loginLabel,1,1);
+        layoutLogin.add(loginIdField,2,1);
+        layoutLogin.add(buttonLogin,1,2);
+        GridPane layoutStudent = new GridPane();
+        layoutStudent.setHgap(10);
+        layoutStudent.setVgap(10);
+        Button buttonRefresh = new Button();
+        buttonRefresh.setText("Refresh");
+        layoutStudent.add(buttonRefresh,1,2);
 
+
+        Scene sceneStudent = new Scene(layoutStudent,1280,720);
         buttonLogin.setOnAction(e-> {
             try {
                 userStudent = controller.getStudent(parseInt(loginIdField.getText()));
             } catch (Exception ex) {
                 userStudent = null;
             }
-            System.out.println(userStudent);
+            if(userStudent!=null){
+                Label userInfo = new Label("Student Id: "+userStudent.getStudentId()+" First Name: "+userStudent.getFirstName()+" Last Name: " + userStudent.getLastName());
+                Label userCredits = new Label("Student Credits: "+ userStudent.getTotalCredits());
+                layoutStudent.add(userInfo,1,1);
+                layoutStudent.add(userCredits,2,2);
+                buttonRefresh.setOnAction(e2-> userCredits.setText("Student Credits: "+ userStudent.getTotalCredits()));
+                primaryStage.setScene(sceneStudent);}
         });
         primaryStage.show();
     }

@@ -44,25 +44,39 @@ public class GUITeacherView extends Application {
         controller = new Controller(cr,tr,sr);
 
 
-        GridPane layout = new GridPane();
-        Scene sceneLogin = new Scene(layout,300,250);
+        GridPane layoutLogin = new GridPane();
+        Scene sceneLogin = new Scene(layoutLogin,300,250);
         primaryStage.setScene(sceneLogin);
 
-        layout.setHgap(10);
-        layout.setVgap(10);
+        layoutLogin.setHgap(10);
+        layoutLogin.setVgap(10);
         primaryStage.setTitle("Teacher Manager");
+        Label loginLabel = new Label("Teacher Id:");
         TextField loginIdField = new TextField();
         Button buttonLogin = new Button();
         buttonLogin.setText("Login");
-        layout.add(loginIdField,1,1);
-        layout.add(buttonLogin,1,2);
+        layoutLogin.add(loginLabel,1,1);
+        layoutLogin.add(loginIdField,2,1);
+        layoutLogin.add(buttonLogin,1,2);
+        GridPane layoutTeacher = new GridPane();
+        layoutTeacher.setHgap(10);
+        layoutTeacher.setVgap(10);
+        Scene sceneTeacher = new Scene(layoutTeacher,1280,720);
+        Button buttonRefresh = new Button();
+        buttonRefresh.setText("Refresh");
+        layoutTeacher.add(buttonRefresh,2,1);
+
+
         buttonLogin.setOnAction(e-> {
             try {
                 userTeacher = controller.getTeacher(parseInt(loginIdField.getText()));
             } catch (Exception ex) {
                 userTeacher = null;
             }
-            System.out.println(userTeacher);
+            if(userTeacher!=null){
+                Label userInfo = new Label("Teacher Id: "+userTeacher.getTeacherId()+" First Name: "+userTeacher.getFirstName()+" Last Name: " + userTeacher.getLastName());
+                layoutTeacher.add(userInfo,1,1);
+                primaryStage.setScene(sceneTeacher);}
         });
         primaryStage.show();
 
