@@ -34,6 +34,10 @@ public class GUITeacherView extends Application {
         launch();
     }
 
+    /**
+     * Setup and functionality for Teacher GUI
+     * @param primaryStage
+     */
     @Override
     public void start(Stage primaryStage)  {
         String connURL="jdbc:mysql://localhost:3306/mapsqlproject";

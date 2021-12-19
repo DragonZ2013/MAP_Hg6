@@ -318,16 +318,34 @@ public class Controller {
         return tr.getAll();
     }
 
+    /**
+     * Returns a single teacher object with given id if it exists
+     * @param id
+     * @return
+     * @throws SQLException
+     */
     public Teacher getTeacher(int id) throws SQLException{
         return tr.getObject(id);
     }
 
 
+    /**
+     * Returns a single student object with given id if it exists
+     * @param id
+     * @return
+     * @throws SQLException
+     */
     public Student getStudent(int id) throws SQLException{
         return sr.getObject(id);
     }
 
 
+    /**
+     * Returns a single course object with given id if it exists
+     * @param id
+     * @return
+     * @throws SQLException
+     */
     public Course getCourse(int id) throws SQLException{
         return cr.getObject(id);
     }

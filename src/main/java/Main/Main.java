@@ -26,8 +26,8 @@ public class Main {
         StudentSqlRepository sr = new StudentSqlRepository(connURL,connUser,connPassword);
 
         Controller cont = new Controller(cr,tr,sr);
-        cont.createStudent("Claudiu","Laur",3);
-
+        ConsoleView cw = new ConsoleView(cont);
+        cw.Run();
 
 
     }
