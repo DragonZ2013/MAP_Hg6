@@ -104,7 +104,7 @@ public class StudentSqlRepository implements CrudRepository<Student>{
     }
 
     /**
-     *
+     * Insert course registers to database from student's list
      * @param student
      * @param connection
      * @throws SQLException
@@ -122,7 +122,7 @@ public class StudentSqlRepository implements CrudRepository<Student>{
 
 
     /**
-     * Removes ids not in student's list
+     * Removes course registers from database not in student's list
      * @param student
      * @param connection
      * @throws SQLException
