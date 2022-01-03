@@ -5,6 +5,7 @@ import Main.Model.Student;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class StudentSqlRepository implements CrudRepository<Student>{
 
@@ -77,30 +78,82 @@ public class StudentSqlRepository implements CrudRepository<Student>{
     /**
      * Updates an element in the MySQL database with the same id as param student
      * Also used for Student registration
-     * @param obj
+     * @param student
      * @throws SQLException
      */
     @Override
-    public void update(Student obj) throws SQLException {
+    public void update(Student student) throws SQLException {
         Connection connection = DriverManager.getConnection(connUrl,connUser,connPassword);
         String query = "update students set firstname=?,lastname=?,totalcredits=? where id=?";
         PreparedStatement preparedStatement = connection.prepareStatement(query);
-        preparedStatement.setInt(4,obj.getStudentId());
-        preparedStatement.setString(1,obj.getFirstName());
-        preparedStatement.setString(2,obj.getLastName());
-        preparedStatement.setInt(3,obj.getTotalCredits());
+        preparedStatement.setInt(4,student.getStudentId());
+        preparedStatement.setString(1,student.getFirstName());
+        preparedStatement.setString(2,student.getLastName());
+        preparedStatement.setInt(3,student.getTotalCredits());
+
+
+        preparedStatement.execute();
+        preparedStatement.close();
+
+
+        insertEnrollments(student, connection);
+        deleteEnrollments(student, connection);
+
+
+        connection.close();
+    }
+
+    /**
+     *
+     * @param student
+     * @param connection
+     * @throws SQLException
+     */
+    private void insertEnrollments(Student student, Connection connection) throws SQLException {
         String registerQuery = "insert ignore into enrolledstudents(studentid,courseid) values(?,?)";
         PreparedStatement registerPreparedStatement = connection.prepareStatement(registerQuery);
-        for(int courseId:obj.getEnrolledCourses()){
-            registerPreparedStatement.setInt(1,obj.getStudentId());
+        for(int courseId: student.getEnrolledCourses()){
+            registerPreparedStatement.setInt(1, student.getStudentId());
             registerPreparedStatement.setInt(2,courseId);
             registerPreparedStatement.execute();
         }
-        preparedStatement.execute();
-
         registerPreparedStatement.close();
-        preparedStatement.close();
-        connection.close();
+    }
+
+
+    /**
+     * Removes ids not in student's list
+     * @param student
+     * @param connection
+     * @throws SQLException
+     */
+    private void deleteEnrollments(Student student, Connection connection) throws SQLException {
+        ArrayList<Integer> currentEnrollments = (ArrayList<Integer>) extractEnrolled(student);
+
+        ArrayList<Integer> deletableEnrollments = (ArrayList<Integer>) currentEnrollments.stream()
+                .filter(enrollment-> !student.getEnrolledCourses().contains(enrollment))
+                .toList();
+        String deleteQuery = "delete from enrolledstudents where studentid=? and courseid=?";
+        PreparedStatement deleteStatement = connection.prepareStatement(deleteQuery);
+        deleteStatement.setInt(1, student.getStudentId());
+        for(int deleteCourse:deletableEnrollments)
+        {
+            deleteStatement.setInt(2,deleteCourse);
+            deleteStatement.execute();
+        }
+
+        deleteStatement.close();
+    }
+
+    public List<Integer> extractEnrolled(Student student) throws SQLException{
+        Connection connection = DriverManager.getConnection(connUrl,connUser,connPassword);
+        Statement statement = connection.createStatement();
+        ResultSet enrolledCourses = statement.executeQuery("select * from enrolledstudents where studentid = "+student.getStudentId());
+        ArrayList<Integer> arrayList =  new ArrayList<>();
+        while (enrolledCourses.next()){
+            arrayList.add(enrolledCourses.getInt("courseid"));
+        }
+        return arrayList;
     }
 
     /**
